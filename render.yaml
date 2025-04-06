@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: sms-server
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python sms_server.py"
+    envVars: []
+    autoDeploy: true
