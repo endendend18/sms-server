@@ -95,17 +95,17 @@ STATS_TEMPLATE = """
 
 """
 def parse_message(raw):
-type_match = re.search(r'(입금|출금)', raw)
-amount_match = re.search(r'(입금|출금) ([\d,]+)원', raw)
-name_match = re.search(r'\n(.*?)\n잔액', raw)
-balance_match = re.search(r'잔액 ([\d,]+)', raw)
-datetime_match = re.search(r'(\d{2}/\d{2}) (\d{2}:\d{2})', raw)
-type_ = type_match.group(1) if type_match else ""
-amount = int(amount_match.group(2).replace(",", "")) if amount_match else 0
-name = name_match.group(1).strip() if name_match else ""
-balance = int(balance_match.group(1).replace(",", "")) if balance_match else 0
-date = datetime_match.group(1) if datetime_match else ""
-time = datetime_match.group(2) if datetime_match else ""
+    type_match = re.search(r'(입금|출금)', raw)
+    amount_match = re.search(r'(입금|출금) ([\d,]+)원', raw)
+    name_match = re.search(r'\n(.*?)\n잔액', raw)
+    balance_match = re.search(r'잔액 ([\d,]+)', raw)
+    datetime_match = re.search(r'(\d{2}/\d{2}) (\d{2}:\d{2})', raw)
+    type_ = type_match.group(1) if type_match else ""
+    amount = int(amount_match.group(2).replace(",", "")) if amount_match else 0
+    name = name_match.group(1).strip() if name_match else ""
+    balance = int(balance_match.group(1).replace(",", "")) if balance_match else 0
+    date = datetime_match.group(1) if datetime_match else ""
+    time = datetime_match.group(2) if datetime_match else ""
 
 return type_, amount, name, balance, date, time
 
