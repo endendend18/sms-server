@@ -101,7 +101,7 @@ STATS_TEMPLATE = """
 
 def parse_message(raw):
     lines = raw.strip().split("\n")
-    
+
     type_ = ""
     amount = 0
     name = ""
@@ -121,8 +121,9 @@ def parse_message(raw):
                 balance = int(balance_match.group().replace(",", ""))
         elif re.match(r'\d{2}/\d{2}', line):
             date, time = line.strip().split(" ")
-        elif name == "":
-            name = line.strip()
+    
+    # 이름은 마지막 줄 기준으로
+    name = lines[-2].strip() if len(lines) >= 2 else ""
 
     return type_, amount, name, balance, date, time
 
