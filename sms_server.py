@@ -129,6 +129,7 @@ def parse_message(raw):
 @app.route("/receive", methods=["POST"])
 def receive_sms():
     data = request.json
+    print("[DEBUG] 수신된 문자:", data.get("message", ""))  # ← 요 줄 추가!
     type_, amount, name, balance, date, time = parse_message(data.get("message", ""))
 
     entry = {
