@@ -156,9 +156,12 @@ def parse_message(raw, device):
         name = lines[-1].strip() if len(lines) >= 1 else ""
 
         # 날짜/시간은 서버 시간 기준으로 처리
-        now = datetime.now()
-        date = now.strftime("%m/%d")
-        time = now.strftime("%H:%M")
+from datetime import datetime, timezone, timedelta
+
+# 한국 시간 기준으로 현재 시간 구하기
+now = datetime.now(timezone(timedelta(hours=9)))
+date = now.strftime("%m/%d")
+time = now.strftime("%H:%M")
 
     else:
         # 타이틀폰 (기존 방식)
@@ -204,7 +207,12 @@ def receive_sms():
 @app.route("/data", methods=["GET"])
 def show_messages():
     q = request.args.get("q", "").lower()
-    filtered = [msg for msg in messages if q in msg["name"].lower() or q in msg["type"] or q in msg["date"] or q in msg["device"]]
+    filtered = [
+        msg for msg in messages
+        if q in msg["name"].lower() or q in f"{msg['amount']}"
+    ]
+    # 최신 순 정렬
+    filtered.sort(key=lambda x: x["received_at"], reverse=True)
     return render_template_string(HTML_TEMPLATE, messages=filtered, q=q)
 
 @app.route("/stats")
