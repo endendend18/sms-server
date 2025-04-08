@@ -15,46 +15,77 @@ HTML_TEMPLATE = """
     <meta http-equiv="refresh" content="10">
     <title>문자 내역</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        input { padding: 6px; width: 300px; margin-bottom: 15px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        .입금 { color: blue; font-weight: bold; }
-        .출금 { color: red; font-weight: bold; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #3C3F41;
+            color: #f1f1f1;
+        }
+
+        input {
+            padding: 6px;
+            width: 300px;
+            margin-bottom: 15px;
+            background-color: #4B4E50;
+            color: #ffffff;
+            border: 1px solid #666;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #2E2E2E;
+            color: #f1f1f1;
+        }
+
+        th, td {
+            border: 1px solid #555;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4B4E50;
+            color: #ffffff;
+        }
+
+        .입금 {
+            color: #4FC3F7;
+            font-weight: bold;
+        }
+
+        .출금 {
+            color: #FF8A65;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h1>입출금 문자 내역</h1>
+    <h2>입출금 문자 내역</h2>
     <form method="get">
-        <input type="text" name="q" placeholder="검색어를 입력하세요 (이름, 날짜, 입금 등)" value="{{ q }}" />
-        <button type="submit">검색</button>
+        <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
     </form>
     <table>
-        <thead>
-            <tr>
-                <th>은행</th>
-                <th>날짜</th>
-                <th>시간</th>
-                <th>구분</th>
-                <th>금액</th>
-                <th>이름</th>
-                <th>잔액</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for msg in messages %}
-            <tr>
-                <td>{{ msg.device }}</td>
-                <td>{{ msg.date }}</td>
-                <td>{{ msg.time }}</td>
-                <td class="{{ msg.type }}">{{ msg.type }}</td>
-                <td>{{ "{:,}".format(msg.amount) }}</td>
-                <td>{{ msg.name }}</td>
-                <td>{{ "{:,}".format(msg.balance) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+        <tr>
+            <th>은행</th>
+            <th>날짜</th>
+            <th>시간</th>
+            <th>구분</th>
+            <th>금액</th>
+            <th>이름</th>
+            <th>잔액</th>
+        </tr>
+        {% for msg in messages %}
+        <tr>
+            <td>{{ msg.device }}</td>
+            <td>{{ msg.date }}</td>
+            <td>{{ msg.time }}</td>
+            <td class="{{ msg.type }}">{{ msg.type }}</td>
+            <td>{{ "{:,}".format(msg.amount) }}</td>
+            <td>{{ msg.name }}</td>
+            <td>{{ "{:,}".format(msg.balance) }}</td>
+        </tr>
+        {% endfor %}
     </table>
 </body>
 </html>
