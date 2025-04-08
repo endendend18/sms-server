@@ -78,6 +78,8 @@ HTML_TEMPLATE = """
             <th>잔액</th>
             <th>삭제</th>
         </tr>
+        {% for msg in messages %}
+        <tr>
             <td>{{ msg.device }}</td>
             <td>{{ msg.date }}</td>
             <td>{{ msg.time }}</td>
