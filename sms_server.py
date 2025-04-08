@@ -11,6 +11,8 @@ HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="10">
     <title>문자 내역</title>
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
