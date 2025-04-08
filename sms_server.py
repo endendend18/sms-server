@@ -161,21 +161,22 @@ def parse_message(raw, device):
         time = now.strftime("%H:%M")
 
     else:
-        # 타이틀폰 (기존 방식)
+        # 타이틀 & 블루
+    if device in ["타이틀", "블루"]:
         for line in lines:
             if "입금" in line or "출금" in line:
                 type_ = "입금" if "입금" in line else "출금"
                 amount_match = re.search(r'[\d,]+', line)
                 if amount_match:
-                    amount = int(amount_match.group().replace(",", ""))
+                   amount = int(amount_match.group().replace(",", ""))
             elif "잔액" in line:
                 balance_match = re.search(r'[\d,]+', line)
                 if balance_match:
                     balance = int(balance_match.group().replace(",", ""))
             elif re.match(r'\d{2}/\d{2}', line):
                 date, time = line.strip().split(" ")
-
-        name = lines[-2].strip() if len(lines) >= 2 else ""
+                
+    name = lines[-2].strip() if len(lines) >= 2 else ""
 
     return type_, amount, name, balance, date, time
 
