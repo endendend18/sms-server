@@ -12,7 +12,7 @@ HTML_TEMPLATE = """
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="10">
+    <meta http-equiv="refresh" content="5">
     <title>문자 내역</title>
     <style>
         body {
