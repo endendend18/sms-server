@@ -88,9 +88,10 @@ HTML_TEMPLATE = """
             <td>{{ msg.name }}</td>
             <td>{{ "{:,}".format(msg.balance) }}</td>
             <td>
-                <form method="post" action="/delete/{{ msg.id }}" class="inline">
-                    <input type="password" name="pw" placeholder="비번" style="width:60px;">
-                    <input type="submit" value="삭제" style="width:45px; padding: 4px 6px; font-size: 12px;">
+                <form method="post" action="/delete/{{ msg.id }}" class="inline" style="display: flex; align-items: center;">
+                    <input type="password" name="pw" placeholder="비번" style="width:60px; margin-right:4px; vertical-align: middle;">
+                    <input type="submit" value="삭제" style="width:45px; padding: 4px 6px; font-size: 12px; vertical-align: middle;">
+    </form>
                 </form>
             </td>
         </tr>
