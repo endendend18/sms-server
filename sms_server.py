@@ -160,7 +160,7 @@ def parse_message(raw, device):
         date = now.strftime("%m/%d")
         time = now.strftime("%H:%M")
 
-    else:
+else:
         # 타이틀 & 블루
     if device in ["타이틀", "블루"]:
         for line in lines:
