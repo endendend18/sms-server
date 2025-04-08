@@ -88,12 +88,14 @@ HTML_TEMPLATE = """
             <td>{{ msg.name }}</td>
             <td>{{ "{:,}".format(msg.balance) }}</td>
             <td>
-                <form method="post" action="/delete/{{ msg.id }}" class="inline" style="display: flex; align-items: center;">
-                    <input type="password" name="pw" placeholder="비번" style="width:60px; margin-right:4px; vertical-align: middle;">
-                    <input type="submit" value="삭제" style="width:45px; padding: 4px 6px; font-size: 12px; vertical-align: middle;">
-    </form>
+        <td style="padding: 0;">
+            <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                <form method="post" action="/delete/{{ msg.id }}" style="display: flex; align-items: center;">
+                    <input type="password" name="pw" placeholder="비번" style="width: 50px; height: 24px; font-size: 12px; margin-right: 4px;">
+                    <input type="submit" value="삭제" style="width: 45px; height: 28px; font-size: 12px;">
                 </form>
-            </td>
+            </div>
+        </td>
         </tr>
         {% endfor %}
     </table>
