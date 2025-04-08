@@ -77,7 +77,7 @@ HTML_TEMPLATE = """
             <th>이름</th>
             <th>잔액</th>
             <th>삭제</th>
-        <tr>
+        </tr>
             <td>{{ msg.device }}</td>
             <td>{{ msg.date }}</td>
             <td>{{ msg.time }}</td>
