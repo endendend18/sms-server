@@ -139,6 +139,8 @@ def parse_message(raw, device):
     amount = 0
     name = ""
     balance = 0
+    date = ""
+    time = ""
 
     if device == "모모":
         # 모모폰 전용 파싱
@@ -152,17 +154,17 @@ def parse_message(raw, device):
                 balance_match = re.search(r'[\d,]+', line)
                 if balance_match:
                     balance = int(balance_match.group().replace(",", ""))
-
+        
         name = lines[-1].strip() if len(lines) >= 1 else ""
 
         # 날짜/시간은 서버 시간 기준으로 처리
         now = datetime.now(timezone(timedelta(hours=9)))
         date = now.strftime("%m/%d")
         time = now.strftime("%H:%M")
+        return type_, amount, name, balance, date, time
 
-else:
-    # 타이틀 & 블루
     if device in ["타이틀", "블루"]:
+        # 타이틀 & 블루폰 파싱
         for line in lines:
             if "입금" in line or "출금" in line:
                 type_ = "입금" if "입금" in line else "출금"
@@ -177,7 +179,9 @@ else:
                 date, time = line.strip().split(" ")
 
         name = lines[-2].strip() if len(lines) >= 2 else ""
-        return type_, amount, name, balance, date, time  # ← 여기도 들여쓰기!
+        return type_, amount, name, balance, date, time
+
+    return type_, amount, name, balance, date, time
 
 @app.route("/receive", methods=["POST"])
 def receive_sms():
