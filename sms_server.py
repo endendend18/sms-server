@@ -90,7 +90,7 @@ HTML_TEMPLATE = """
             <td>
                 <form method="post" action="/delete/{{ msg.id }}" class="inline">
                     <input type="password" name="pw" placeholder="비번" style="width:60px;">
-                    <input type="submit" value="삭제">
+                    <input type="submit" value="삭제" style="width:45px; padding: 4px 6px; font-size: 12px;">
                 </form>
             </td>
         </tr>
