@@ -132,43 +132,64 @@ STATS_TEMPLATE = """
 </html>
 """
 
-def parse_message(raw):
+def parse_message(raw, device):
     lines = raw.strip().split("\n")
 
     type_ = ""
     amount = 0
     name = ""
     balance = 0
-    date = ""
-    time = ""
 
-    for line in lines:
-        if "입금" in line or "출금" in line:
-            type_ = "입금" if "입금" in line else "출금"
-            amount_match = re.search(r'[\d,]+', line)
-            if amount_match:
-                amount = int(amount_match.group().replace(",", ""))
-        elif "잔액" in line:
-            balance_match = re.search(r'[\d,]+', line)
-            if balance_match:
-                balance = int(balance_match.group().replace(",", ""))
-        elif re.match(r'\d{2}/\d{2}', line):
-            date, time = line.strip().split(" ")
-    
-    # 이름은 마지막 줄 기준으로
-    name = lines[-2].strip() if len(lines) >= 2 else ""
+    if device == "모모":
+        # 모모폰 전용 파싱
+        for line in lines:
+            if "입금" in line or "출금" in line:
+                type_ = "입금" if "입금" in line else "출금"
+                amount_match = re.search(r'[\d,]+', line)
+                if amount_match:
+                    amount = int(amount_match.group().replace(",", ""))
+            elif "잔액" in line:
+                balance_match = re.search(r'[\d,]+', line)
+                if balance_match:
+                    balance = int(balance_match.group().replace(",", ""))
+        
+        name = lines[-1].strip() if len(lines) >= 1 else ""
+
+        # 날짜/시간은 서버 시간 기준으로 처리
+        now = datetime.now()
+        date = now.strftime("%m/%d")
+        time = now.strftime("%H:%M")
+
+    else:
+        # 타이틀폰 (기존 방식)
+        for line in lines:
+            if "입금" in line or "출금" in line:
+                type_ = "입금" if "입금" in line else "출금"
+                amount_match = re.search(r'[\d,]+', line)
+                if amount_match:
+                    amount = int(amount_match.group().replace(",", ""))
+            elif "잔액" in line:
+                balance_match = re.search(r'[\d,]+', line)
+                if balance_match:
+                    balance = int(balance_match.group().replace(",", ""))
+            elif re.match(r'\d{2}/\d{2}', line):
+                date, time = line.strip().split(" ")
+
+        name = lines[-2].strip() if len(lines) >= 2 else ""
 
     return type_, amount, name, balance, date, time
 
 @app.route("/receive", methods=["POST"])
 def receive_sms():
     data = request.json
-    print("[DEBUG] 수신된 문자:", data.get("message", ""))  # ← 요 줄 추가!
-    type_, amount, name, balance, date, time = parse_message(data.get("message", ""))
+    device = data.get("device", "")
+    raw_message = data.get("message", "")
+
+    type_, amount, name, balance, date, time = parse_message(raw_message, device)
 
     entry = {
-        "device": data.get("device", ""),
-        "message": data.get("message", ""),
+        "device": device,
+        "message": raw_message,
         "date": date,
         "time": time,
         "type": type_,
