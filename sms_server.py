@@ -152,16 +152,13 @@ def parse_message(raw, device):
                 balance_match = re.search(r'[\d,]+', line)
                 if balance_match:
                     balance = int(balance_match.group().replace(",", ""))
-        
+
         name = lines[-1].strip() if len(lines) >= 1 else ""
 
         # 날짜/시간은 서버 시간 기준으로 처리
-from datetime import datetime, timezone, timedelta
-
-# 한국 시간 기준으로 현재 시간 구하기
-now = datetime.now(timezone(timedelta(hours=9)))
-date = now.strftime("%m/%d")
-time = now.strftime("%H:%M")
+        now = datetime.now(timezone(timedelta(hours=9)))
+        date = now.strftime("%m/%d")
+        time = now.strftime("%H:%M")
 
     else:
         # 타이틀폰 (기존 방식)
