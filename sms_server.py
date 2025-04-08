@@ -1,12 +1,10 @@
 from flask import Flask, request, jsonify, render_template_string
 from datetime import datetime, timezone, timedelta
 import re
-import uuid
 from collections import defaultdict
 
 app = Flask(__name__)
 messages = []
-DELETE_PASSWORD = "1234"  # 삭제 비밀번호
 
 # HTML 테이블 페이지 템플릿
 HTML_TEMPLATE = """
@@ -76,7 +74,6 @@ HTML_TEMPLATE = """
             <th>금액</th>
             <th>이름</th>
             <th>잔액</th>
-            <th>삭제</th>
         </tr>
         {% for msg in messages %}
         <tr>
@@ -87,15 +84,6 @@ HTML_TEMPLATE = """
             <td>{{ "{:,}".format(msg.amount) }}</td>
             <td>{{ msg.name }}</td>
             <td>{{ "{:,}".format(msg.balance) }}</td>
-            <td>
-        <td style="padding: 0;">
-            <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
-                <form method="post" action="/delete/{{ msg.id }}" style="display: flex; align-items: center;">
-                    <input type="password" name="pw" placeholder="비번" style="width: 50px; height: 24px; font-size: 12px; margin-right: 4px;">
-                    <input type="submit" value="삭제" style="width: 45px; height: 28px; font-size: 12px;">
-                </form>
-            </div>
-        </td>
         </tr>
         {% endfor %}
     </table>
@@ -224,14 +212,6 @@ def show_messages():
     # 최신 순 정렬
     filtered.sort(key=lambda x: x["received_at"], reverse=True)
     return render_template_string(HTML_TEMPLATE, messages=filtered, q=q)
-
-@app.route("/delete/<msg_id>", methods=["POST"])
-def delete_message(msg_id):
-    pw = request.form.get("pw")
-    if pw == DELETE_PASSWORD:
-        global messages
-        messages = [msg for msg in messages if msg["id"] != msg_id]
-    return redirect(url_for("show_messages"))
 
 @app.route("/stats")
 def show_stats():
