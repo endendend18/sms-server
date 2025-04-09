@@ -24,19 +24,64 @@ LOGIN_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <title>로그인</title>
+    <style>
+        body {
+            background-color: #3C3F41;
+            color: #f1f1f1;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box {
+            background-color: #2E2E2E;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            width: 250px;
+            margin: 10px 0;
+            background-color: #4B4E50;
+            color: white;
+            border: 1px solid #666;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #5C5C5C;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #7A7A7A;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            text-align: left;
+        }
+        .error {
+            color: #FF7373;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h2>로그인</h2>
-    <form method="POST" action="/login">
-        <label>ID:</label><br>
-        <input type="text" name="id"><br><br>
-        <label>비밀번호:</label><br>
-        <input type="password" name="pw"><br><br>
-        <input type="submit" value="로그인">
-    </form>
-    {% if error %}
-    <p style="color:red">{{ error }}</p>
-    {% endif %}
+    <div class="login-box">
+        <h2>로그인</h2>
+        <form method="POST" action="/login">
+            <label for="id">ID:</label>
+            <input type="text" name="id" id="id"><br>
+            <label for="pw">비밀번호:</label>
+            <input type="password" name="pw" id="pw"><br>
+            <input type="submit" value="로그인">
+        </form>
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+    </div>
 </body>
 </html>
 """
