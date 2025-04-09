@@ -188,6 +188,16 @@ HTML_TEMPLATE = """
     </style>
 </head>
 <body>
+    <div style="text-align: right; margin-bottom: 10px;">
+        <a href="/logout" style="
+            font-size: 13px;
+            background-color: #555;
+            color: white;
+            padding: 6px 12px;
+            text-decoration: none;
+            border-radius: 4px;
+        ">로그아웃</a>
+    </div>
     <h2>입출금 문자 내역</h2>
     <form method="get">
         <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
