@@ -13,7 +13,6 @@ HTML_TEMPLATE = """
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="5">
     <title>문자 내역</title>
     <style>
         body {
@@ -103,28 +102,42 @@ HTML_TEMPLATE = """
         <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
     </form>
     <table>
-        <tr>
-            <th>은행</th>
-            <th>날짜</th>
-            <th>시간</th>
-            <th>구분</th>
-            <th>금액</th>
-            <th>이름</th>
-            <th>잔액</th>
-        </tr>
-        
-        {% for msg in messages %}
-        <tr>
-            <td class="bank {{ msg.device }}">{{ msg.device }}</td>
-            <td class="date">{{ msg.date }}</td>
-            <td class="time">{{ msg.time }}</td>
-            <td class="type {{ msg.type }}">{{ msg.type }}</td>
-            <td class="amount">{{ "{:,}".format(msg.amount) }}</td>
-            <td class="name">{{ msg.name }}</td>
-            <td class="balance">{{ "{:,}".format(msg.balance) }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <thead>
+            <tr>
+                <th>은행</th>
+                <th>날짜</th>
+                <th>시간</th>
+                <th>구분</th>
+                <th>금액</th>
+                <th>이름</th>
+                <th>잔액</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            {% for msg in messages %}
+            <tr>
+                <td class="bank {{ msg.device }}">{{ msg.device }}</td>
+                <td class="date">{{ msg.date }}</td>
+                <td class="time">{{ msg.time }}</td>
+                <td class="type {{ msg.type }}">{{ msg.type }}</td>
+                <td class="amount">{{ "{:,}".format(msg.amount) }}</td>
+                <td class="name">{{ msg.name }}</td>
+                <td class="balance">{{ "{:,}".format(msg.balance) }}</td>
+            </tr>
+            {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    setInterval(() => {
+        fetch('/data-part')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('table-body').innerHTML = html;
+            });
+    }, 5000);
+</script>
+
 </body>
 </html>
 """
@@ -254,6 +267,28 @@ def show_messages():
     # 최신 순 정렬
     filtered.sort(key=lambda x: x["received_at"], reverse=True)
     return render_template_string(HTML_TEMPLATE, messages=filtered, q=q)
+
+@app.route("/data-part")
+def data_part():
+    q = request.args.get("q", "").lower()
+    filtered = [
+        msg for msg in messages
+        if q in msg["name"].lower() or q in f"{msg['amount']}"
+    ]
+    filtered.sort(key=lambda x: x["received_at"], reverse=True)
+    return render_template_string("""
+        {% for msg in messages %}
+        <tr>
+            <td class="bank {{ msg.device }}">{{ msg.device }}</td>
+            <td class="date">{{ msg.date }}</td>
+            <td class="time">{{ msg.time }}</td>
+            <td class="type {{ msg.type }}">{{ msg.type }}</td>
+            <td class="amount">{{ "{:,}".format(msg.amount) }}</td>
+            <td class="name">{{ msg.name }}</td>
+            <td class="balance">{{ "{:,}".format(msg.balance) }}</td>
+        </tr>
+        {% endfor %}
+    """, messages=filtered)
 
 @app.route("/stats")
 def show_stats():
