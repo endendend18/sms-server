@@ -77,7 +77,7 @@ HTML_TEMPLATE = """
         }
 
         /* 은행별 글자 색 (글자만 컬러) */
-        td.bank.momo {
+        td.bank.모모 {
             color: #FF7A00;  /* 오렌지 느낌 */
             font-weight: bold;
         }
@@ -91,7 +91,7 @@ HTML_TEMPLATE = """
         }
 
         /* 금액 / 잔액도 은행 기준으로 컬러 맞춤 */
-        td.amount.momo,
+        td.amount.모모,
         td.balance.momo {
             color: #FF7A00;
             font-weight: bold;
