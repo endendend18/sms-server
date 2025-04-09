@@ -6,6 +6,7 @@ from collections import defaultdict
 
 app = Flask(__name__)
 app.secret_key = "아무거나_복잡한_문자열"  # 세션 유지를 위한 키
+
 # 사용자 목록 (아이디: 비밀번호)
 USERS = {
     "대장": "dldkdus1!",
@@ -316,7 +317,7 @@ def login():
     if request.method == "POST":
         user_id = request.form.get("id")
         user_pw = request.form.get("pw")
-        if user_id in USERS and user_pw == USERS[user_id]:
+        if user_id in USERS and USERS[user_id] == user_pw:
             session["logged_in"] = True
             return redirect(url_for("show_messages"))
         else:
