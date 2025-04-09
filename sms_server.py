@@ -190,12 +190,12 @@ HTML_TEMPLATE = """
 <body>
     <div style="text-align: right; margin-bottom: 10px;">
         <a href="/logout" style="
-            font-size: 18px;
+            font-size: 12px;
             background-color: #555;
             color: white;
-            padding: 6px 12px;
+            padding: 3px 6px;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 3px;
         ">✖️</a>
     </div>
     <h2>입출금 문자 내역</h2>
