@@ -297,13 +297,19 @@ def data_part():
     return render_template_string("""
         {% for msg in messages %}
         <tr>
-            <td class="bank {{ msg.device }}">{{ msg.device }}</td>
+            <td class="bank {% if msg.device == '모모' %}모모{% elif msg.device == '타이틀' %}타이틀{% elif msg.device == '블루' %}블루{% endif %}">
+                {{ msg.device }}
+            </td>
             <td class="date">{{ msg.date }}</td>
             <td class="time">{{ msg.time }}</td>
             <td class="type {{ msg.type }}">{{ msg.type }}</td>
-            <td class="amount">{{ "{:,}".format(msg.amount) }}</td>
+            <td class="amount {% if msg.device == '모모' %}모모{% elif msg.device == '타이틀' %}타이틀{% elif msg.device == '블루' %}블루{% endif %}">
+                {{ "{:,}".format(msg.amount) }}
+            </td>
             <td class="name">{{ msg.name }}</td>
-            <td class="balance">{{ "{:,}".format(msg.balance) }}</td>
+            <td class="balance {% if msg.device == '모모' %}모모{% elif msg.device == '타이틀' %}타이틀{% elif msg.device == '블루' %}블루{% endif %}">
+                {{ "{:,}".format(msg.balance) }}
+            </td>
         </tr>
         {% endfor %}
     """, messages=filtered)
