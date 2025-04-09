@@ -76,23 +76,37 @@ HTML_TEMPLATE = """
             padding-right: 12px;
         }
 
-        /* 은행별 배경색 + 굵은 글씨 */
+        /* 은행별 글자 색 (글자만 컬러) */
         td.bank.momo {
-            background-color: #FCE4D6;
+            color: #FF7A00;  /* 오렌지 느낌 */
             font-weight: bold;
-            color: #000;
         }
-
         td.bank.타이틀 {
-            background-color: #BDD7EE;
+            color: #2F75B5;  /* 파란 느낌 */
             font-weight: bold;
-            color: #000;
+        }
+        td.bank.블루 {
+            color: #548235;  /* 초록 느낌 */
+            font-weight: bold;
         }
 
-        td.bank.블루 {
-            background-color: #C6E0B4;
+        /* 금액 / 잔액도 은행 기준으로 컬러 맞춤 */
+        td.amount.momo,
+        td.balance.momo {
+            color: #FF7A00;
             font-weight: bold;
-            color: #000;
+        }
+
+        td.amount.타이틀,
+        td.balance.타이틀 {
+            color: #2F75B5;
+            font-weight: bold;
+        }
+
+        td.amount.블루,
+        td.balance.블루 {
+            color: #548235;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -120,9 +134,9 @@ HTML_TEMPLATE = """
                 <td class="date">{{ msg.date }}</td>
                 <td class="time">{{ msg.time }}</td>
                 <td class="type {{ msg.type }}">{{ msg.type }}</td>
-                <td class="amount">{{ "{:,}".format(msg.amount) }}</td>
+                <td class="amount {{ msg.device }}">{{ "{:,}".format(msg.amount) }}</td>
                 <td class="name">{{ msg.name }}</td>
-                <td class="balance">{{ "{:,}".format(msg.balance) }}</td>
+                <td class="balance {{ msg.device }}">{{ "{:,}".format(msg.balance) }}</td>
             </tr>
             {% endfor %}
     </tbody>
