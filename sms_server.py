@@ -76,36 +76,34 @@ HTML_TEMPLATE = """
             padding-right: 12px;
         }
 
-        /* 은행별 글자 색 (글자만 컬러) */
+        /* 은행별 글자 색 (연한 색상 + 굵은 글씨) */
         td.bank.모모 {
-            color: #FF7A00;  /* 오렌지 느낌 */
+            color: #F8CBAD;
             font-weight: bold;
         }
         td.bank.타이틀 {
-            color: #2F75B5;  /* 파란 느낌 */
+            color: #BDD7EE;
             font-weight: bold;
         }
         td.bank.블루 {
-            color: #548235;  /* 초록 느낌 */
+            color: #C6E0B4;
             font-weight: bold;
         }
 
-        /* 금액 / 잔액도 은행 기준으로 컬러 맞춤 */
+        /* 금액 / 잔액 컬러도 통일 */
         td.amount.모모,
-        td.balance.momo {
-            color: #FF7A00;
+        td.balance.모모 {
+            color: #F8CBAD;
             font-weight: bold;
         }
-
         td.amount.타이틀,
         td.balance.타이틀 {
-            color: #2F75B5;
+            color: #BDD7EE;
             font-weight: bold;
         }
-
         td.amount.블루,
         td.balance.블루 {
-            color: #548235;
+            color: #C6E0B4;
             font-weight: bold;
         }
     </style>
