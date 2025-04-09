@@ -1,11 +1,44 @@
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template_string, redirect, url_for, session
 from datetime import datetime, timezone, timedelta
 import re
 import uuid
 from collections import defaultdict
 
 app = Flask(__name__)
+app.secret_key = "아무거나_복잡한_문자열"  # 세션 유지를 위한 키
+# 사용자 목록 (아이디: 비밀번호)
+USERS = {
+    "대장": "dldkdus1!",
+    "뚱이": "dlwkdgns1!",
+    "순두부": "18184848a",
+    "대봉": "18184848a"
+}
+
 messages = []
+
+# 로그인 페이지 템플릿
+LOGIN_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+</head>
+<body>
+    <h2>로그인</h2>
+    <form method="POST" action="/login">
+        <label>ID:</label><br>
+        <input type="text" name="id"><br><br>
+        <label>비밀번호:</label><br>
+        <input type="password" name="pw"><br><br>
+        <input type="submit" value="로그인">
+    </form>
+    {% if error %}
+    <p style="color:red">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
+"""
 
 # HTML 테이블 페이지 템플릿
 HTML_TEMPLATE = """
@@ -275,8 +308,31 @@ def receive_sms():
     messages.append(entry)
     return jsonify({"status": "ok"})
 
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        user_id = request.form.get("id")
+        user_pw = request.form.get("pw")
+        if user_id in USERS and user_pw == USERS[user_id]:
+            session["logged_in"] = True
+            return redirect(url_for("show_messages"))
+        else:
+            error = "ID 또는 비밀번호가 잘못되었습니다."
+    return render_template_string(LOGIN_TEMPLATE, error=error)
+
+@app.route("/logout")
+def logout():
+    session.pop("logged_in", None)
+    return redirect("/login")
+
 @app.route("/data", methods=["GET"])
 def show_messages():
+    if not session.get("logged_in"):
+        return redirect("/login")
+        
     q = request.args.get("q", "").lower()
     filtered = [
         msg for msg in messages
