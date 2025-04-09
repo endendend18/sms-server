@@ -103,7 +103,7 @@ HTML_TEMPLATE = """
 
         input {
             padding: 6px;
-            width: 300px;
+            width: 150px;
             margin-bottom: 15px;
             background-color: #4B4E50;
             color: #ffffff;
