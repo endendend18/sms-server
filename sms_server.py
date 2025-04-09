@@ -3,6 +3,8 @@ from datetime import datetime, timezone, timedelta
 import re
 import uuid
 from collections import defaultdict
+import pandas as pd  # 엑셀 저장용
+import os
 
 app = Flask(__name__)
 app.secret_key = "아무거나_복잡한_문자열"  # 세션 유지를 위한 키
@@ -16,6 +18,18 @@ USERS = {
 }
 
 messages = []
+current_date = None 
+
+# 날짜 변경 시 엑셀 저장 + 초기화
+def check_date_reset():
+    global current_date, messages
+    today = datetime.now(timezone(timedelta(hours=9))).strftime("%Y-%m-%d")
+    if current_date is None:
+        current_date = today
+    elif today != current_date:
+        save_to_excel()
+        current_date = today
+        messages = []
 
 # 로그인 페이지 템플릿
 LOGIN_TEMPLATE = """
@@ -341,8 +355,26 @@ def parse_message(raw, device):
 
     return type_, amount, name, balance, date, time
 
+# 날짜/시간 처리 함수나 변수 아래
+# ↓↓↓ 여기에 추가 ↓↓↓
+def save_to_excel():
+    global messages
+    if not messages:
+        return
+
+    now = datetime.now(timezone(timedelta(hours=9)))
+    today_str = now.strftime("%Y-%m-%d")
+    folder = "history"
+    os.makedirs(folder, exist_ok=True)
+    filepath = os.path.join(folder, f"{today_str}.xlsx")
+
+    df = pd.DataFrame(messages)
+    df.to_excel(filepath, index=False)
+
 @app.route("/receive", methods=["POST"])
 def receive_sms():
+    check_date_reset()
+    
     data = request.json
     device = data.get("device", "")
     raw_message = data.get("message", "")
