@@ -100,6 +100,58 @@ LOGIN_TEMPLATE = """
 </html>
 """
 
+ADD_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>수동 데이터 추가</title>
+    <style>
+        body {
+            background-color: #3C3F41;
+            color: #f1f1f1;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, select {
+            padding: 6px;
+            margin: 5px;
+            background-color: #4B4E50;
+            color: white;
+            border: 1px solid #666;
+        }
+        input[type="submit"] {
+            background-color: #5C5C5C;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>수동 데이터 추가</h2>
+    <form method="POST">
+        은행:
+        <select name="device">
+            <option value="모모">모모</option>
+            <option value="타이틀">타이틀</option>
+            <option value="블루">블루</option>
+        </select><br>
+        날짜 (MM/DD): <input type="text" name="date"><br>
+        시간 (HH:MM): <input type="text" name="time"><br>
+        구분:
+        <select name="type">
+            <option value="입금">입금</option>
+            <option value="출금">출금</option>
+        </select><br>
+        금액: <input type="text" name="amount"><br>
+        이름: <input type="text" name="name"><br>
+        잔액: <input type="text" name="balance"><br>
+        <input type="submit" value="추가">
+    </form>
+    <br><a href="/data" style="color: #aaa;">← 돌아가기</a>
+</body>
+</html>
+"""
+
 # HTML 테이블 페이지 템플릿
 HTML_TEMPLATE = """
 <!DOCTYPE html>
@@ -203,15 +255,26 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div style="text-align: right; margin-bottom: 10px;">
-        <a href="/logout" style="
+        <a href="/add" style="
             font-size: 12px;
             background-color: #555;
             color: white;
             padding: 3px 6px;
             text-decoration: none;
             border-radius: 3px;
-        ">✖️</a>
+            margin-right: 5px;
+        ">＋추가</a>
+
+    <a href="/logout" style="
+        font-size: 12px;
+        background-color: #555;
+        color: white;
+        padding: 3px 6px;
+        text-decoration: none;
+        border-radius: 3px;
+    ">✖️</a>
     </div>
+    
     <h2>입출금 문자 내역</h2>
     <form method="get">
         <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
@@ -429,6 +492,29 @@ def show_messages():
     # 최신 순 정렬
     filtered.sort(key=lambda x: x["received_at"], reverse=True)
     return render_template_string(HTML_TEMPLATE, messages=filtered, q=q)
+
+@app.route("/add", methods=["GET", "POST"])
+def add_entry():
+    if not session.get("logged_in"):
+        return redirect("/login")
+
+    if request.method == "POST":
+        entry = {
+            "id": str(uuid.uuid4()),
+            "device": request.form.get("device"),
+            "date": request.form.get("date"),
+            "time": request.form.get("time"),
+            "type": request.form.get("type"),
+            "amount": int(request.form.get("amount", "0").replace(",", "") or "0"),
+            "name": request.form.get("name"),
+            "balance": int(request.form.get("balance", "0").replace(",", "") or "0"),
+            "message": "수동 입력",
+            "received_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        messages.append(entry)
+        return redirect("/data")
+
+    return render_template_string(ADD_TEMPLATE)
 
 @app.route("/data-part")
 def data_part():
