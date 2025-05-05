@@ -256,23 +256,23 @@ HTML_TEMPLATE = """
 <body>
     <div style="text-align: right; margin-bottom: 10px;">
         <a href="/add" style="
-            font-size: 16px;
+            font-size: 12px;
             background-color: #555;
             color: white;
-            padding: 3px 8px;
+            padding: 3px 6px;
             text-decoration: none;
             border-radius: 3px;
             margin-right: 5px;
-        ">➕</a>
+        ">📝</a>
 
-    <a href="/logout" style="
-        font-size: 12px;
-        background-color: #555;
-        color: white;
-        padding: 3px 6px;
-        text-decoration: none;
-        border-radius: 3px;
-    ">✖️</a>
+        <a href="/logout" style="
+            font-size: 12px;
+            background-color: #555;
+            color: white;
+            padding: 3px 6px;
+            text-decoration: none;
+            border-radius: 3px;
+        ">✖️</a>
     </div>
     
     <h2>입출금 문자 내역</h2>
