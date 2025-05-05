@@ -152,6 +152,58 @@ ADD_TEMPLATE = """
 </html>
 """
 
+EDIT_TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>항목 수정</title>
+    <style>
+        body {
+            background-color: #3C3F41;
+            color: #f1f1f1;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            background-color: #4B4E50;
+            color: white;
+            border: 1px solid #666;
+        }
+        input[type="submit"] {
+            background-color: #5C5C5C;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>항목 수정</h2>
+    <form method="POST">
+        은행:
+        <select name="device">
+            <option value="모모" {% if msg.device == '모모' %}selected{% endif %}>모모</option>
+            <option value="타이틀" {% if msg.device == '타이틀' %}selected{% endif %}>타이틀</option>
+            <option value="블루" {% if msg.device == '블루' %}selected{% endif %}>블루</option>
+        </select><br>
+        날짜 (MM/DD): <input type="text" name="date" value="{{ msg.date }}"><br>
+        시간 (HH:MM): <input type="text" name="time" value="{{ msg.time }}"><br>
+        구분:
+        <select name="type">
+            <option value="입금" {% if msg.type == '입금' %}selected{% endif %}>입금</option>
+            <option value="출금" {% if msg.type == '출금' %}selected{% endif %}>출금</option>
+        </select><br>
+        금액: <input type="text" name="amount" value="{{ "{:,}".format(msg.amount) }}"><br>
+        이름: <input type="text" name="name" value="{{ msg.name }}"><br>
+        잔액: <input type="text" name="balance" value="{{ "{:,}".format(msg.balance) }}"><br>
+        <input type="submit" value="수정 완료">
+    </form>
+    <br><a href="/data" style="color: #aaa;">← 돌아가기</a>
+</body>
+</html>
+"""
+
 # HTML 테이블 페이지 템플릿
 HTML_TEMPLATE = """
 <!DOCTYPE html>
@@ -274,7 +326,7 @@ HTML_TEMPLATE = """
             border-radius: 3px;
         ">✖️</a>
     </div>
-    
+   
     <h2>입출금 문자 내역</h2>
     <form method="get">
         <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
@@ -289,6 +341,7 @@ HTML_TEMPLATE = """
                 <th>금액</th>
                 <th>이름</th>
                 <th>잔액</th>
+                <th>수정</th>
             </tr>
         </thead>
         <tbody id="table-body">
@@ -306,6 +359,9 @@ HTML_TEMPLATE = """
                 <td class="name">{{ msg.name }}</td>
                 <td class="balance {% if msg.device == '모모' %}모모{% elif msg.device == '타이틀' %}타이틀{% elif msg.device == '블루' %}블루{% endif %}">
                     {{ "{:,}".format(msg.balance) }}
+                </td>
+                <td style="text-align: center;">
+                    <a href="/edit/{{ msg.id }}" style="text-decoration: none; color: #4FC3F7;">✏️</a>
                 </td>
             </tr>
             {% endfor %}
@@ -516,6 +572,28 @@ def add_entry():
 
     return render_template_string(ADD_TEMPLATE)
 
+@app.route("/edit/<id>", methods=["GET", "POST"])
+def edit_entry(id):
+    if not session.get("logged_in"):
+        return redirect("/login")
+
+    # 수정할 메시지 찾기
+    msg = next((m for m in messages if m["id"] == id), None)
+    if not msg:
+        return "해당 항목을 찾을 수 없습니다.", 404
+
+    if request.method == "POST":
+        msg["device"] = request.form.get("device")
+        msg["date"] = request.form.get("date")
+        msg["time"] = request.form.get("time")
+        msg["type"] = request.form.get("type")
+        msg["amount"] = int(request.form.get("amount", "0").replace(",", "") or "0")
+        msg["name"] = request.form.get("name")
+        msg["balance"] = int(request.form.get("balance", "0").replace(",", "") or "0")
+        return redirect("/data")
+
+    return render_template_string(EDIT_TEMPLATE, msg=msg)
+
 @app.route("/data-part")
 def data_part():
     q = request.args.get("q", "").lower()
@@ -539,6 +617,9 @@ def data_part():
             <td class="name">{{ msg.name }}</td>
             <td class="balance {% if msg.device == '모모' %}모모{% elif msg.device == '타이틀' %}타이틀{% elif msg.device == '블루' %}블루{% endif %}">
                 {{ "{:,}".format(msg.balance) }}
+            </td>
+            <td style="text-align: center;">
+                <a href="/edit/{{ msg.id }}" style="text-decoration: none; color: #4FC3F7;">✏️</a>
             </td>
         </tr>
         {% endfor %}
