@@ -256,15 +256,13 @@ HTML_TEMPLATE = """
 <body>
     <div style="text-align: right; margin-bottom: 10px;">
         <a href="/add" style="
-            font-size: 18px;
-            background-color: #28A745;
+            font-size: 16px;
+            background-color: #555;
             color: white;
-            padding: 10px 12px;
+            padding: 3px 8px;
             text-decoration: none;
-            border-radius: 50%;
+            border-radius: 3px;
             margin-right: 5px;
-            display: inline-block;
-            text-align: center;
         ">➕</a>
 
     <a href="/logout" style="
