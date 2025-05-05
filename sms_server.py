@@ -256,14 +256,16 @@ HTML_TEMPLATE = """
 <body>
     <div style="text-align: right; margin-bottom: 10px;">
         <a href="/add" style="
-            font-size: 12px;
-            background-color: #555;
+            font-size: 18px;
+            background-color: #28A745;
             color: white;
-            padding: 3px 6px;
+            padding: 10px 12px;
             text-decoration: none;
-            border-radius: 3px;
+            border-radius: 50%;
             margin-right: 5px;
-        ">＋추가</a>
+            display: inline-block;
+            text-align: center;
+        ">➕</a>
 
     <a href="/logout" style="
         font-size: 12px;
