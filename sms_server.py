@@ -210,7 +210,7 @@ HTML_TEMPLATE = """
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>문자 내역</title>
+    <title>List</title>
     <style>
         body {
             font-family: Arial, sans-serif;
