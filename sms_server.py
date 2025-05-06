@@ -111,7 +111,7 @@ ADD_TEMPLATE = """
             background-color: #3C3F41;
             color: #f1f1f1;
             font-family: Arial, sans-serif;
-            padding: 20px;
+            padding: 10px; /* 수정: 20px → 10px */
         }
         input, select {
             padding: 6px;
@@ -214,15 +214,15 @@ HTML_TEMPLATE = """
     <style>
         body {
             font-family: Arial, sans-serif;
-            padding: 20px;
+            padding: 10px;
             background-color: #3C3F41;
             color: #f1f1f1;
         }
 
-        input {
+            input {
             padding: 6px;
             width: 150px;
-            margin-bottom: 15px;
+            margin-bottom: 5px;  /* 수정: 15px → 5px */
             background-color: #4B4E50;
             color: #ffffff;
             border: 1px solid #666;
@@ -327,7 +327,6 @@ HTML_TEMPLATE = """
         ">✖️</a>
     </div>
    
-    <h2>입출금 문자 내역</h2>
     <form method="get">
         <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
     </form>
