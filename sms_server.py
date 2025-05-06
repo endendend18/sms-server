@@ -428,7 +428,9 @@ HTML_TEMPLATE = """
     <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
         <div style="background-color: #2E2E2E; color: white; padding: 20px; border-radius: 10px; width: 300px; margin: 100px auto; text-align: center;">
             <h3>비밀번호 입력</h3>
-            <input type="password" id="passwordInput" style="padding: 8px; width: 80%; background-color: #4B4E50; color:white; border: 1px solid #666;"><br><br>
+            <input type="password" id="passwordInput"
+                style="padding: 8px; width: 80%; background-color: #4B4E50; color:white; border: 1px solid #666;"
+                onkeydown="if(event.key === 'Enter') checkPassword();"><br><br>
             <button onclick="checkPassword()" style="padding: 6px 12px; background-color: #5C5C5C; color:white;">확인</button>
             <button onclick="closeModal()" style="padding: 6px 12px; background-color: #555;">취소</button>
         </div>
