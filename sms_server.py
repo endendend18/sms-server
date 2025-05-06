@@ -307,7 +307,7 @@ HTML_TEMPLATE = """
 </head>
 <body>
     <div style="text-align: right; margin-bottom: 10px;">
-        <a href="/add" style="
+        <a href="#" onclick="openModal()" style="
             font-size: 12px;
             background-color: #555;
             color: white;
@@ -361,7 +361,7 @@ HTML_TEMPLATE = """
                     {{ "{:,}".format(msg.balance) }}
                 </td>
                 <td style="text-align: center;">
-                    <a href="/edit/{{ msg.id }}" style="text-decoration: none; color: #4FC3F7;">✏️</a>
+                    <a href="#" onclick="openEditModal('{{ msg.id }}')" style="text-decoration: none; color: #4FC3F7;">✏️</a>
                 </td>
             </tr>
             {% endfor %}
@@ -369,6 +369,7 @@ HTML_TEMPLATE = """
         </table>
 
 <script>
+    // ✅ 테이블 데이터 5초마다 갱신
     setInterval(() => {
         fetch('/data-part')
             .then(res => res.text())
@@ -376,8 +377,62 @@ HTML_TEMPLATE = """
                 document.getElementById('table-body').innerHTML = html;
             });
     }, 5000);
+
+    // ✅ 현재 수정하려는 ID (없으면 추가로 처리)
+    let editTargetId = null;
+
+    // ✅ 추가 버튼 클릭 → 모달 열기
+    function openModal() {
+        editTargetId = null;
+        showPasswordModal();
+    }
+
+    // ✅ 수정 버튼 클릭 → 모달 열기
+    function openEditModal(id) {
+        editTargetId = id;
+        showPasswordModal();
+    }
+
+    // ✅ 비밀번호 모달 열기
+    function showPasswordModal() {
+        document.getElementById('passwordModal').style.display = 'block';
+        document.getElementById('passwordInput').value = '';
+    }
+
+    // ✅ 비밀번호 모달 닫기
+    function closeModal() {
+        document.getElementById('passwordModal').style.display = 'none';
+        editTargetId = null;
+    }
+
+    // ✅ 비밀번호 확인 후 이동
+    function checkPassword() {
+        const password = document.getElementById('passwordInput').value;
+        if (password === '1234') {
+            if (editTargetId) {
+                // 수정 페이지로
+                window.location.href = "/edit/" + editTargetId;
+            } else {
+                // 추가 페이지로
+                window.location.href = "/add";
+            }
+        } else {
+            alert("비밀번호가 틀렸습니다.");
+    // 비밀번호 틀렸을 때 입력창 비우기 (편의성 향상)
+            document.getElementById('passwordInput').value = '';
+        }
+    }
 </script>
 
+<!-- 비밀번호 입력 모달 -->
+    <div id="passwordModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
+        <div style="background-color: #2E2E2E; color: white; padding: 20px; border-radius: 10px; width: 300px; margin: 100px auto; text-align: center;">
+            <h3>비밀번호 입력</h3>
+            <input type="password" id="passwordInput" style="padding: 8px; width: 80%; background-color: #4B4E50; color:white; border: 1px solid #666;"><br><br>
+            <button onclick="checkPassword()" style="padding: 6px 12px; background-color: #5C5C5C; color:white;">확인</button>
+            <button onclick="closeModal()" style="padding: 6px 12px; background-color: #555;">취소</button>
+        </div>
+    </div>
 </body>
 </html>
 """
@@ -619,7 +674,7 @@ def data_part():
                 {{ "{:,}".format(msg.balance) }}
             </td>
             <td style="text-align: center;">
-                <a href="/edit/{{ msg.id }}" style="text-decoration: none; color: #4FC3F7;">✏️</a>
+                <a href="#" onclick="openEditModal('{{ msg.id }}')" style="text-decoration: none; color: #4FC3F7;">✏️</a>
             </td>
         </tr>
         {% endfor %}
