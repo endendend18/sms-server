@@ -306,30 +306,35 @@ HTML_TEMPLATE = """
     </style>
 </head>
 <body>
-    <div style="text-align: right; margin-bottom: 10px;">
-        <a href="#" onclick="openModal()" style="
-            font-size: 12px;
-            background-color: #555;
-            color: white;
-            padding: 3px 6px;
-            text-decoration: none;
-            border-radius: 3px;
-            margin-right: 5px;
-        ">📝</a>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <!-- 왼쪽: 검색창 -->
+        <form method="get" style="margin: 0;">
+            <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
+        </form>
 
-        <a href="/logout" style="
-            font-size: 12px;
-            background-color: #555;
-            color: white;
-            padding: 3px 6px;
-            text-decoration: none;
-            border-radius: 3px;
-        ">✖️</a>
+        <!-- 오른쪽: 추가/로그아웃 버튼 -->
+        <div>
+            <a href="#" onclick="openModal()" style="
+                font-size: 12px;
+                background-color: #555;
+                color: white;
+                padding: 3px 6px;
+                text-decoration: none;
+                border-radius: 3px;
+                margin-left: 5px;
+            ">📝</a>
+
+            <a href="/logout" style="
+                font-size: 12px;
+                background-color: #555;
+                color: white;
+                padding: 3px 6px;
+                text-decoration: none;
+                border-radius: 3px;
+            ">✖️</a>
+        </div>
     </div>
-   
-    <form method="get">
-        <input type="text" name="q" placeholder="검색어를 입력하세요" value="{{ q }}">
-    </form>
+
     <table>
         <thead>
             <tr>
