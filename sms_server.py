@@ -600,8 +600,13 @@ def show_messages():
         msg for msg in messages
         if q in msg["name"].lower() or q in f"{msg['amount']}"
     ]
-    # 최신 순 정렬
-    filtered.sort(key=lambda x: x["received_at"], reverse=True)
+
+    # ✅ date + time 기준으로 최신순 정렬
+    filtered.sort(
+        key=lambda x: datetime.strptime(f"2025/{x['date']} {x['time']}", "%Y/%m/%d %H:%M"),
+        reverse=True
+    )
+
     return render_template_string(HTML_TEMPLATE, messages=filtered, q=q)
 
 @app.route("/add", methods=["GET", "POST"])
@@ -656,7 +661,13 @@ def data_part():
         msg for msg in messages
         if q in msg["name"].lower() or q in f"{msg['amount']}"
     ]
-    filtered.sort(key=lambda x: x["received_at"], reverse=True)
+
+    # ✅ date + time 기준으로 최신순 정렬
+    filtered.sort(
+        key=lambda x: datetime.strptime(f"2025/{x['date']} {x['time']}", "%Y/%m/%d %H:%M"),
+        reverse=True
+    )
+
     return render_template_string("""
         {% for msg in messages %}
         <tr>
