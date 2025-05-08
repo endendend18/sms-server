@@ -517,21 +517,23 @@ def parse_message(raw, device):
         for line in lines:
             if "입금" in line or "출금" in line:
                 type_ = "입금" if "입금" in line else "출금"
-                amount_match = re.search(r'[\d,]+', line)
+                amount_match = re.search(r'\d[\d,]*', line)
                 if amount_match:
                     amount = int(amount_match.group().replace(",", ""))
+
+            elif re.match(r'\d{2}/\d{2}', line):
+                date_time_match = re.match(r'(\d{2}/\d{2}) (\d{2}:\d{2})', line)
+                if date_time_match:
+                    date, time = date_time_match.groups()
+
             elif "잔액" in line:
-                balance_match = re.search(r'[\d,]+', line)
+                balance_match = re.search(r'\d[\d,]*', line)
                 if balance_match:
                     balance = int(balance_match.group().replace(",", ""))
-            elif re.match(r'\d{2}/\d{2}', line):
-                date_match = re.search(r'\d{2}/\d{2}', line)
-                time_match = re.search(r'\d{2}:\d{2}', line)
-                if date_match and time_match:
-                    date = date_match.group()
-                    time = time_match.group()
 
-        name = lines[-2].strip() if len(lines) >= 2 else ""
+            elif not name and "잔액" in line:
+                name = line.split("잔액")[0].strip()
+
         return type_, amount, name, balance, date, time
 
     if device == "블루":
