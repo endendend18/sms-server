@@ -495,7 +495,6 @@ def parse_message(raw, device):
     time = ""
 
     if device == "모모":
-        # 모모폰 전용 파싱
         for line in lines:
             if "입금" in line or "출금" in line:
                 type_ = "입금" if "입금" in line else "출금"
@@ -509,14 +508,12 @@ def parse_message(raw, device):
         
         name = lines[-1].strip() if len(lines) >= 1 else ""
 
-        # 날짜/시간은 서버 시간 기준으로 처리
         now = datetime.now(timezone(timedelta(hours=9)))
         date = now.strftime("%m/%d")
         time = now.strftime("%H:%M")
         return type_, amount, name, balance, date, time
 
-    if device in ["타이틀", "블루"]:
-        # 타이틀 & 블루폰 파싱
+    if device == "타이틀":
         for line in lines:
             if "입금" in line or "출금" in line:
                 type_ = "입금" if "입금" in line else "출금"
@@ -531,6 +528,30 @@ def parse_message(raw, device):
                 date, time = line.strip().split(" ")
 
         name = lines[-2].strip() if len(lines) >= 2 else ""
+        return type_, amount, name, balance, date, time
+
+    if device == "블루":
+        for line in lines:
+            if "입금" in line or "출금" in line:
+                type_ = "입금" if "입금" in line else "출금"
+                amount_match = re.search(r'[\d,]+', line)
+                if amount_match:
+                    amount = int(amount_match.group().replace(",", ""))
+            elif "잔액" in line:
+                balance_match = re.search(r'[\d,]+', line)
+                if balance_match:
+                    balance = int(balance_match.group().replace(",", ""))
+            elif re.match(r'\d{2}/\d{2}', line):
+                date = line.strip()
+            elif line.startswith("[Web발신]") or "[카카오뱅크]" in line or "*" in line:
+                continue
+            elif type_ and amount and not name:
+                name = line.strip()
+
+        time_match = re.search(r'\d{2}:\d{2}', raw)
+        if time_match:
+            time = time_match.group()
+
         return type_, amount, name, balance, date, time
 
     return type_, amount, name, balance, date, time
