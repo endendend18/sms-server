@@ -525,7 +525,11 @@ def parse_message(raw, device):
                 if balance_match:
                     balance = int(balance_match.group().replace(",", ""))
             elif re.match(r'\d{2}/\d{2}', line):
-                date, time = line.strip().split(" ")
+                date_match = re.search(r'\d{2}/\d{2}', line)
+                time_match = re.search(r'\d{2}:\d{2}', line)
+                if date_match and time_match:
+                    date = date_match.group()
+                    time = time_match.group()
 
         name = lines[-2].strip() if len(lines) >= 2 else ""
         return type_, amount, name, balance, date, time
