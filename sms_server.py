@@ -515,6 +515,7 @@ def parse_message(raw, device):
 
     if device == "타이틀":
         for i, line in enumerate(lines):
+            line = line.strip()
             if "입금" in line or "출금" in line:
                 type_ = "입금" if "입금" in line else "출금"
                 amount_match = re.search(r'\d[\d,]*', line)
@@ -527,13 +528,16 @@ def parse_message(raw, device):
                     date, time = date_time_match.groups()
 
             elif "잔액" in line:
-                # 이름 + 잔액이 같이 있는 경우
                 parts = line.split("잔액")
                 if len(parts) == 2:
                     name = parts[0].strip()
                     balance_match = re.search(r'\d[\d,]*', parts[1])
                     if balance_match:
                         balance = int(balance_match.group().replace(",", ""))
+
+        # ✅ fallback 이름 추출 (위에서 못 찾은 경우)
+        if not name and len(lines) >= 2:
+            name = lines[-2].strip()
 
         return type_, amount, name, balance, date, time
 
