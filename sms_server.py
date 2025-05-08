@@ -528,16 +528,13 @@ def parse_message(raw, device):
                     date, time = date_time_match.groups()
 
             elif "잔액" in line:
-                parts = line.split("잔액")
-                if len(parts) == 2:
-                    name = parts[0].strip()
-                    balance_match = re.search(r'\d[\d,]*', parts[1])
-                    if balance_match:
-                        balance = int(balance_match.group().replace(",", ""))
-
-        # ✅ fallback 이름 추출 (위에서 못 찾은 경우)
-        if not name and len(lines) >= 2:
-            name = lines[-2].strip()
+                # ✅ 이름과 잔액 같이 있는 줄 처리
+                name_match = re.match(r'(.+)\s+잔액', line)
+                balance_match = re.search(r'\d[\d,]*', line)
+                if name_match:
+                    name = name_match.group(1).strip()
+                if balance_match:
+                    balance = int(balance_match.group().replace(",", ""))
 
         return type_, amount, name, balance, date, time
 
