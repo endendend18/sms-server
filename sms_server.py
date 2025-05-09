@@ -606,8 +606,12 @@ def receive_sms():
         "balance": balance,
         "received_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
+
+    print(f"받은 데이터: date={msg.get('date')}, time={msg.get('time')}, name={msg.get('name')}")
+    
     messages.append(entry)
     return jsonify({"status": "ok"})
+
 
 
 
@@ -701,9 +705,15 @@ def data_part():
         if q in msg["name"].lower() or q in f"{msg['amount']}"
     ]
 
-    # 1. 날짜/시간이 비어 있지 않은 데이터만 추리기
-    filtered = [x for x in filtered if x.get('date') and x.get('time')]
+    # ▶️ 필터링 전 메시지 수 확인
+    print(f"▶️ 필터 전 메시지 수: {len(filtered)}")
+    if filtered:
+        print("예시 메시지:", filtered[0])
 
+    # 1. 날짜/시간이 비어 있지 않은 데이터만 추리기
+    # filtered = [x for x in filtered if x.get('date') and x.get('time')]
+    print(f"✅ 필터 후 메시지 수: {len(filtered)}")
+    
     # 2. 정렬
     filtered.sort(
         key=lambda x: datetime.strptime(f"2025/{x['date']} {x['time']}", "%Y/%m/%d %H:%M")
