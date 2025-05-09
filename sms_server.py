@@ -514,34 +514,35 @@ def parse_message(raw, device):
         return type_, amount, name, balance, date, time
 
     if device == "타이틀":
-        for i, line in enumerate(lines):
-            line = line.strip()
+        try:
+            for i, line in enumerate(lines):
+                line = line.strip()
 
-            # 1행: 입금/출금 정보
-            if i == 0:
-                if "입금" in line or "출금" in line:
+                # 1행: 입금/출금
+                if i == 0 and ("입금" in line or "출금" in line):
                     type_ = "입금" if "입금" in line else "출금"
                     amount_match = re.search(r'\d[\d,]*', line)
                     if amount_match:
                         amount = int(amount_match.group().replace(",", ""))
 
-            # 2행: 날짜 + 시간
-            elif i == 1:
-                dt_match = re.match(r'(\d{2}/\d{2}) (\d{2}:\d{2})', line)
-                if dt_match:
-                    date, time = dt_match.groups()
+                # 2행: 날짜 + 시간
+                elif i == 1:
+                    dt_match = re.match(r'(\d{2}/\d{2}) (\d{2}:\d{2})', line)
+                    if dt_match:
+                        date, time = dt_match.groups()
 
-            # 3행: 이름 + 잔액
-            elif i == 2:
-                if "잔액" in line:
+                # 3행: 이름 + 잔액
+                elif i == 2 and "잔액" in line:
                     parts = line.split("잔액")
-                    if len(parts) == 2:
-                        name_candidate = parts[0].strip()
-                        if name_candidate:
-                            name = name_candidate
-                        balance_match = re.search(r'\d[\d,]*', parts[1])
-                        if balance_match:
-                            balance = int(balance_match.group().replace(",", ""))
+                    name_candidate = parts[0].strip() if len(parts) > 0 else ""
+                    if name_candidate:
+                        name = name_candidate
+                    balance_match = re.search(r'\d[\d,]*', parts[1]) if len(parts) > 1 else None
+                    if balance_match:
+                        balance = int(balance_match.group().replace(",", ""))
+
+        except Exception as e:
+            print("타이틀 파싱 오류:", e)
 
         return type_, amount, name, balance, date, time
         
@@ -767,4 +768,4 @@ def show_stats():
     return render_template_string(STATS_TEMPLATE, monthly_data=monthly_data, daily_data=daily_data)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    app.run(host="0.0.0.0", port=10000, debug=True)
