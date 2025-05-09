@@ -517,12 +517,13 @@ def parse_message(raw, device):
         for i, line in enumerate(lines):
             line = line.strip()
 
-            # 1행: 입출금 + 금액
-            if i == 0 and ("입금" in line or "출금" in line):
-                type_ = "입금" if "입금" in line else "출금"
-                amount_match = re.search(r'\d[\d,]*', line)
-                if amount_match:
-                    amount = int(amount_match.group().replace(",", ""))
+            # 1행: 입금/출금 정보
+            if i == 0:
+                if "입금" in line or "출금" in line:
+                    type_ = "입금" if "입금" in line else "출금"
+                    amount_match = re.search(r'\d[\d,]*', line)
+                    if amount_match:
+                        amount = int(amount_match.group().replace(",", ""))
 
             # 2행: 날짜 + 시간
             elif i == 1:
@@ -531,16 +532,19 @@ def parse_message(raw, device):
                     date, time = dt_match.groups()
 
             # 3행: 이름 + 잔액
-            elif i == 2 and "잔액" in line:
-                parts = line.split("잔액")
-                if len(parts) == 2:
-                    name = parts[0].strip()
-                    balance_match = re.search(r'\d[\d,]*', parts[1])
-                    if balance_match:
-                        balance = int(balance_match.group().replace(",", ""))
+            elif i == 2:
+                if "잔액" in line:
+                    parts = line.split("잔액")
+                    if len(parts) == 2:
+                        name_candidate = parts[0].strip()
+                        if name_candidate:
+                            name = name_candidate
+                        balance_match = re.search(r'\d[\d,]*', parts[1])
+                        if balance_match:
+                            balance = int(balance_match.group().replace(",", ""))
 
         return type_, amount, name, balance, date, time
-
+        
     if device == "블루":
         for i, line in enumerate(lines):
             line = line.strip()
