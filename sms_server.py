@@ -701,10 +701,12 @@ def data_part():
         if q in msg["name"].lower() or q in f"{msg['amount']}"
     ]
 
-    # ✅ date + time 기준으로 최신순 정렬
+    # 1. 날짜/시간이 비어 있지 않은 데이터만 추리기
+    filtered = [x for x in filtered if x.get('date') and x.get('time')]
+
+    # 2. 정렬
     filtered.sort(
-        key=lambda x: datetime.strptime(f"2025/{x['date']} {x['time']}", "%Y/%m/%d %H:%M"),
-        reverse=True
+        key=lambda x: datetime.strptime(f"2025/{x['date']} {x['time']}", "%Y/%m/%d %H:%M")
     )
 
     return render_template_string("""
