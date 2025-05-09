@@ -637,18 +637,34 @@ def logout():
 def show_messages():
     if not session.get("logged_in"):
         return redirect("/login")
-        
+
     q = request.args.get("q", "").lower()
     filtered = [
         msg for msg in messages
         if q in msg["name"].lower() or q in f"{msg['amount']}"
     ]
 
-    # ✅ date + time 기준으로 최신순 정렬
-    filtered.sort(
-        key=lambda x: datetime.strptime(f"2025/{x['date']} {x['time']}", "%Y/%m/%d %H:%M"),
-        reverse=True
-    )
+    print(f"▶️ /data 필터 전 메시지 수: {len(filtered)}")
+    if filtered:
+        print("예시 메시지:", filtered[0])
+
+    # ✅ 날짜/시간이 모두 있는 항목만 정렬 대상으로
+    filtered = [x for x in filtered if x.get('date') and x.get('time')]
+    print(f"✅ 필터 후 메시지 수: {len(filtered)}")
+
+    def safe_sort_key(x):
+        date = x.get('date', '').strip()
+        time = x.get('time', '').strip()
+        if not date or not time:
+            return datetime.min
+        try:
+            return datetime.strptime(f"2025/{date} {time}", "%Y/%m/%d %H:%M")
+        except Exception as e:
+            print(f"⚠️ 정렬 오류: {e} / 메시지: {x}")
+            return datetime.min
+
+    # 최신순으로 정렬 (reverse=True)
+    filtered.sort(key=safe_sort_key, reverse=True)
 
     return render_template_string(HTML_TEMPLATE, messages=filtered, q=q)
 
@@ -705,19 +721,26 @@ def data_part():
         if q in msg["name"].lower() or q in f"{msg['amount']}"
     ]
 
-    # ▶️ 필터링 전 메시지 수 확인
     print(f"▶️ 필터 전 메시지 수: {len(filtered)}")
     if filtered:
         print("예시 메시지:", filtered[0])
 
-    # 1. 날짜/시간이 비어 있지 않은 데이터만 추리기
-    # filtered = [x for x in filtered if x.get('date') and x.get('time')]
+    # ✅ 날짜/시간이 모두 있는 항목만 정렬 대상
+    filtered = [x for x in filtered if x.get('date') and x.get('time')]
     print(f"✅ 필터 후 메시지 수: {len(filtered)}")
-    
-    # 2. 정렬
-    filtered.sort(
-        key=lambda x: datetime.strptime(f"2025/{x['date']} {x['time']}", "%Y/%m/%d %H:%M")
-    )
+
+    def safe_sort_key(x):
+        date = x.get('date', '').strip()
+        time = x.get('time', '').strip()
+        if not date or not time:
+            return datetime.min
+        try:
+            return datetime.strptime(f"2025/{date} {time}", "%Y/%m/%d %H:%M")
+        except Exception as e:
+            print(f"⚠️ 정렬 오류: {e} / 메시지: {x}")
+            return datetime.min
+
+    filtered.sort(key=safe_sort_key)
 
     return render_template_string("""
         {% for msg in messages %}
