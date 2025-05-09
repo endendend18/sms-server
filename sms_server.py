@@ -607,7 +607,7 @@ def receive_sms():
         "received_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     }
 
-    print(f"받은 데이터: date={msg.get('date')}, time={msg.get('time')}, name={msg.get('name')}")
+    print(f"받은 데이터: date={entry.get('date')}, time={entry.get('time')}, name={entry.get('name')}")
     
     messages.append(entry)
     return jsonify({"status": "ok"})
