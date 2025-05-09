@@ -516,30 +516,28 @@ def parse_message(raw, device):
     if device == "타이틀":
         for i, line in enumerate(lines):
             line = line.strip()
-        
-            if "입금" in line or "출금" in line:
+
+            # 1행: 입출금 + 금액
+            if i == 0 and ("입금" in line or "출금" in line):
                 type_ = "입금" if "입금" in line else "출금"
                 amount_match = re.search(r'\d[\d,]*', line)
                 if amount_match:
                     amount = int(amount_match.group().replace(",", ""))
 
-            elif re.match(r'\d{2}/\d{2} \d{2}:\d{2}', line):
-                date_time_match = re.match(r'(\d{2}/\d{2}) (\d{2}:\d{2})', line)
-                if date_time_match:
-                    date, time = date_time_match.groups()
+            # 2행: 날짜 + 시간
+            elif i == 1:
+                dt_match = re.match(r'(\d{2}/\d{2}) (\d{2}:\d{2})', line)
+                if dt_match:
+                    date, time = dt_match.groups()
 
-            elif "잔액" in line:
-                # ✅ 이름과 잔액이 같은 줄에 있는 경우
+            # 3행: 이름 + 잔액
+            elif i == 2 and "잔액" in line:
                 parts = line.split("잔액")
                 if len(parts) == 2:
                     name = parts[0].strip()
                     balance_match = re.search(r'\d[\d,]*', parts[1])
                     if balance_match:
                         balance = int(balance_match.group().replace(",", ""))
-
-        # ✅ 혹시 위에서 못 찾았을 경우 fallback
-        if not name and len(lines) >= 2:
-            name = lines[-2].strip()
 
         return type_, amount, name, balance, date, time
 
